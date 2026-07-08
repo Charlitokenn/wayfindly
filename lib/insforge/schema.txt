@@ -1,0 +1,153 @@
+/**
+ * boothfinder — InsForge Database Schema (v1)
+ * 
+ * Tables:
+ * 1. app_settings - Global configuration
+ * 2. venues - Venue information (Mappedin integration)
+ * 3. events - Event instances with date ranges
+ * 4. user_profiles - Extended attendee data
+ * 5. user_visits - Wayfinding session tracking
+ * 6. booths - Booth/Organization details
+ * 7. leads - Lead capture records
+ * 8. clickpesa_payments - Payment tracking
+ * 9. promotions - Milestone visitor promotions
+ * 10. promotion_winners - Promotion winner audit log
+ * 11. contests - Instagram social contests
+ * 12. contest_entries - Contest submission tracking
+ * 13. instagram_connections - Encrypted OAuth tokens
+ * 14. audit_log - Immutable record of critical actions
+ * 15. visitor_stats - Aggregated stats for dashboards
+ */
+
+/*
+app_settings
+- id: uuid (pk)
+- wayfinding_fee_enabled: boolean
+- wayfinding_fee_amount: decimal
+- clickpesa_api_key: string (encrypted)
+- updated_at: timestamp
+
+venues
+- id: uuid (pk)
+- name: string
+- mappedin_venue_slug: string
+- mappedin_key: string
+- mappedin_secret: string
+- created_at: timestamp
+
+events
+- id: uuid (pk)
+- venue_id: uuid (fk -> venues.id)
+- name: string
+- start_date: timestamp
+- end_date: timestamp
+- is_active: boolean
+- created_at: timestamp
+
+user_profiles
+- id: uuid (pk) - matches Clerk user_id
+- email: string
+- full_name: string
+- phone: string
+- onboarding_complete: boolean
+- total_distance_walked_m: integer (atomic increments)
+- created_at: timestamp
+
+user_visits
+- id: uuid (pk)
+- user_id: uuid (fk -> user_profiles.id)
+- event_id: uuid (fk -> events.id)
+- booth_category: string
+- distance_walked: integer
+- visited_at: timestamp
+
+booths
+- id: uuid (pk) - matches Clerk organization_id
+- event_id: uuid (fk -> events.id)
+- name: string
+- slug: string
+- description: text
+- mappedin_node_id: string
+- logo_url: string
+- category: string
+- created_at: timestamp
+
+leads
+- id: uuid (pk)
+- booth_id: uuid (fk -> booths.id)
+- attendee_id: uuid (fk -> user_profiles.id)
+- name: string
+- phone: string
+- origin_node: string
+- destination_node: string
+- captured_at: timestamp
+
+clickpesa_payments
+- id: uuid (pk)
+- user_id: uuid (fk -> user_profiles.id)
+- amount: decimal
+- currency: string (default TZS)
+- status: string (pending, completed, failed)
+- provider_reference: string
+- created_at: timestamp
+
+promotions
+- id: uuid (pk)
+- booth_id: uuid (fk -> booths.id)
+- milestone_count: integer (e.g., every 50th visitor)
+- prize_description: text
+- is_active: boolean
+- created_at: timestamp
+
+promotion_winners
+- id: uuid (pk)
+- promotion_id: uuid (fk -> promotions.id)
+- lead_id: uuid (fk -> leads.id)
+- winner_index: integer
+- awarded_at: timestamp
+
+contests
+- id: uuid (pk)
+- booth_id: uuid (fk -> booths.id)
+- name: string
+- description: text
+- start_at: timestamp
+- end_at: timestamp
+- crypto_seed: string (generated once, never changed)
+- pool_size: integer
+- created_at: timestamp
+
+contest_entries
+- id: uuid (pk)
+- contest_id: uuid (fk -> contests.id)
+- user_id: uuid (fk -> user_profiles.id)
+- instagram_username: string
+- instagram_post_url: string
+- is_verified: boolean
+- created_at: timestamp
+
+instagram_connections
+- id: uuid (pk)
+- booth_id: uuid (fk -> booths.id)
+- instagram_user_id: string
+- access_token: string (encrypted)
+- token_expires_at: timestamp
+- created_at: timestamp
+
+audit_log
+- id: uuid (pk)
+- action: string
+- entity_type: string
+- entity_id: uuid
+- actor_id: string
+- payload: jsonb
+- created_at: timestamp
+
+visitor_stats
+- id: uuid (pk)
+- booth_id: uuid (fk -> booths.id)
+- date: date
+- hourly_leads: jsonb
+- total_visits: integer
+- updated_at: timestamp
+*/
