@@ -19,8 +19,8 @@ export async function updateAppSettings(formData: FormData) {
   const feeAmount = parseFloat(formData.get("feeAmount") as string);
 
   const insforge = await getInsForgeServer();
-
-  const { error } = await insforge
+  
+  const { error } = await insforge.database
     .from("app_settings")
     .upsert({
       id: "global", // Single record for global settings

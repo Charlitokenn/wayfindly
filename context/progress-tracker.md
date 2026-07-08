@@ -7,7 +7,7 @@ Last updated: 2026-07-08
 ## Phase 1 — Foundation
 | Status | # | Feature | Notes |
 |--------|---|---------|-------|
-| [x] | 1 | Project setup + full DB schema | |
+| [x] | 1 | Project setup + full DB schema | Created 15 tables in InsForge |
 | [x] | 2 | Google OAuth + Clerk org routing | |
 | [x] | 3 | Idle sign-in prompt (3-min timer) | |
 | [x] | 4 | Onboarding flow | |
@@ -17,17 +17,17 @@ Last updated: 2026-07-08
 
 | Status | # | Feature | Notes |
 |--------|---|---------|-------|
-| [ ] | 6  | Venue map browsing UI | |
-| [ ] | 7  | Mappedin SDK integration | |
-| [ ] | 8  | Blue-dot wayfinding + user profiling | |
-| [ ] | 9  | Leads capture (name, phone, origin, destination) | |
+| [x] | 6  | Venue map browsing UI | |
+| [x] | 7  | Mappedin SDK integration | |
+| [x] | 8  | Blue-dot wayfinding + user profiling | |
+| [x] | 9  | Leads capture (name, phone, origin, destination) | |
 
 ## Phase 3 — Payments
 
 | Status | # | Feature | Notes |
 |--------|---|---------|-------|
-| [ ] | 10 | ClickPesa onboarding payment | |
-| [ ] | 11 | Payment status tracking | |
+| [x] | 10 | ClickPesa onboarding payment | |
+| [x] | 11 | Payment status tracking | |
 
 ## Phase 4 — Booth Management
 
@@ -91,7 +91,7 @@ Last updated: 2026-07-08
 
 ## Current Session Focus
 
-> Feature being worked on right now: **Phase 2 — Venue Map & Navigation**
+> Feature being worked on right now: **Phase 2 — Blue-dot wayfinding + user profiling**
 
 ## Known Blockers
 
@@ -100,8 +100,8 @@ Last updated: 2026-07-08
 ## Build Notes
 
 **Feature 1 — Project setup + full DB schema** (2026-07-08)
-Files changed: `package.json`, `app/layout.tsx`, `app/globals.css`, `proxy.ts`, `lib/insforge/schema.txt`
-Decisions: Used Ubuntu font for sans, JetBrains Mono for mono. Configured Tailwind v4 with project tokens. Defined 15 tables for InsForge.
+Files changed: `package.json`, `app/layout.tsx`, `app/globals.css`, `proxy.ts`, `lib/insforge/schema.txt`, `lib/insforge/schema.sql`
+Decisions: Used Ubuntu font for sans, JetBrains Mono for mono. Configured Tailwind v4 with project tokens. Defined 15 tables for InsForge and imported them using InsForge CLI.
 Next: Feature 2 — Google OAuth + Clerk org routing
 
 **Feature 2 — Google OAuth + Clerk org routing** (2026-07-08)
@@ -123,3 +123,28 @@ Next: Feature 5 — Admin panel + app settings (fee toggle)
 Files changed: `app/(admin)/settings/page.tsx`, `app/(admin)/settings/actions.ts`
 Decisions: Restricted access via `publicMetadata.role === 'admin'`. Single record with ID 'global' in `app_settings` table.
 Next: Phase 2 — Venue Map & Navigation
+
+**Build Stabilization** (2026-07-08)
+Files changed: `lib/insforge/client.ts`, `app/(onboarding)/onboarding/actions.ts`, `app/(admin)/settings/actions.ts`, `app/(admin)/settings/page.tsx`
+Decisions: Corrected InsForge SDK usage to match version 6 signatures. Moved database calls to `.database.from()` and fixed client config properties (`baseUrl`, `accessToken`).
+Next: Phase 2 — Feature 6 (Venue map browsing UI)
+
+**Feature 6 — Venue map browsing UI** (2026-07-08)
+Files changed: `app/(public)/events/page.tsx`, `components/events/EventCard.tsx`
+Decisions: Created a landing page to browse active and upcoming events. Status is determined dynamically server-side.
+Next: Feature 7 — Mappedin SDK integration
+
+**Feature 7 — Mappedin SDK integration** (2026-07-08)
+Files changed: `components/map/MapView.tsx`, `app/(attendee)/events/[eventId]/page.tsx`, `next.config.ts`
+Decisions: Integrated Mappedin React SDK v6. Use `dynamic` with `ssr: false` for the Map component. Added `transpilePackages` for SDK.
+Next: Feature 8 — Blue-dot wayfinding + user profiling
+
+**Feature 8 & 9 — Wayfinding, Profiling & Leads** (2026-07-08)
+Files changed: `app/(attendee)/events/actions.ts`, `components/map/MapView.tsx`, `app/(attendee)/events/[eventId]/page.tsx`
+Decisions: Implemented Server Action to record visits, leads, and distance walked. Enabled Mappedin Blue-Dot and Navigation.
+Next: Phase 3 — Feature 10 (ClickPesa onboarding payment)
+
+**Feature 10 & 11 — ClickPesa Payments** (2026-07-08)
+Files changed: `lib/clickpesa.ts`, `app/(onboarding)/onboarding/actions.ts`, `app/(onboarding)/onboarding/payment/page.tsx`, `app/api/payments/webhook/route.ts`
+Decisions: Integrated ClickPesa mobile money (TZS). Implemented polling + webhook for status synchronization. Ensured server-side verification before completing onboarding.
+Next: Phase 4 — Feature 12 (Booth panel + Organization Profile)
