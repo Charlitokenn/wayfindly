@@ -1,7 +1,7 @@
 "use client";
 
 import { MapView as MappedinMapView, useMapData, Navigation } from "@mappedin/react-sdk";
-import "@mappedin/react-sdk/lib/esm/index.css";
+import "@mappedin/mappedin-js/lib/index.css";
 import { Loader2, AlertCircle, Search, Navigation as NavIcon, Store, X, MapPin } from "lucide-react";
 import { useState, useMemo, useEffect } from "react";
 import { recordWayfindingSession } from "@/app/(attendee)/events/actions";
@@ -25,6 +25,12 @@ export default function MapViewer({ mapId, booths, eventId }: MapViewerProps) {
     secret: process.env.NEXT_PUBLIC_MAPPEDIN_SECRET!,
     mapId: mapId,
   });
+
+  useEffect(() => {
+    if (mapData && !mapView) {
+      // In v6, we can use the mapData to initialize or let MapView handle it
+    }
+  }, [mapData, mapView]);
 
   const filteredBooths = useMemo(() => {
     if (!searchQuery) return booths;
@@ -168,7 +174,7 @@ export default function MapViewer({ mapId, booths, eventId }: MapViewerProps) {
         <MappedinMapView 
           mapData={mapData} 
           className="h-full w-full"
-          onMapViewCreated={setMapView}
+          onLoad={setMapView}
         >
           {directions && <Navigation directions={directions} />}
         </MappedinMapView>

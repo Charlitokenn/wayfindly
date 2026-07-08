@@ -1,21 +1,9 @@
 import { getInsForgeServer } from "@/lib/insforge/client";
 import { notFound } from "next/navigation";
-import dynamic from "next/dynamic";
 import { UserButton } from "@clerk/nextjs";
 import { Map as MapIcon, ChevronLeft } from "lucide-react";
 import Link from "next/link";
-
-const MapViewer = dynamic(() => import("@/components/map/MapView"), {
-  ssr: false,
-  loading: () => (
-    <div className="flex h-[calc(100vh-64px)] w-full items-center justify-center bg-bg">
-      <div className="flex flex-col items-center gap-2">
-        <div className="h-10 w-10 animate-pulse rounded-full bg-border" />
-        <p className="text-sm font-medium text-text-subtle">Initializing map engine...</p>
-      </div>
-    </div>
-  ),
-});
+import MapViewerWrapper from "@/components/map/MapViewerWrapper";
 
 interface EventMapPageProps {
   params: Promise<{
@@ -87,7 +75,7 @@ export default async function EventMapPage({ params }: EventMapPageProps) {
       </header>
 
       <main className="flex-1 overflow-hidden">
-        <MapViewer mapId={event.mappedin_map_id} booths={booths} eventId={eventId} />
+        <MapViewerWrapper mapId={event.mappedin_map_id} booths={booths} eventId={eventId} />
       </main>
     </div>
   );

@@ -16,7 +16,11 @@ export async function POST(req: NextRequest) {
     console.warn("CLICKPESA_WEBHOOK_SECRET is missing");
   }
 
-  const { reference, status, external_id: userId } = body;
+  const { reference, status, external_id: userId } = body as {
+    reference: string;
+    status: string;
+    external_id: string;
+  };
 
   if (!reference || !status || !userId) {
     return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
