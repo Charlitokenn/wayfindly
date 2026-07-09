@@ -18,7 +18,7 @@ export default async function EventMapPage({ params }: EventMapPageProps) {
   const { data: event, error } = await insforge
     .database
     .from("events")
-    .select("*, venues(name), booths(*)")
+    .select("*, venues(name,mappedin_venue_slug), booths(*)")
     .eq("id", eventId)
     .single();
 
@@ -27,9 +27,10 @@ export default async function EventMapPage({ params }: EventMapPageProps) {
   }
 
   const booths = event.booths || [];
+  const mappedin_map_id = event.venues.mappedin_venue_slug
 
   // Ensure we have a map ID
-  if (!event.mappedin_map_id) {
+  if (!mappedin_map_id) {
     return (
       <div className="flex h-screen w-full flex-col items-center justify-center bg-bg p-6 text-center">
         <MapIcon className="h-16 w-16 text-text-subtle mb-4" />
@@ -75,7 +76,7 @@ export default async function EventMapPage({ params }: EventMapPageProps) {
       </header>
 
       <main className="flex-1 overflow-hidden">
-        <MapViewerWrapper mapId={event.mappedin_map_id} booths={booths} eventId={eventId} />
+        <MapViewerWrapper mapId={mappedin_map_id} booths={booths} eventId={eventId} />
       </main>
     </div>
   );

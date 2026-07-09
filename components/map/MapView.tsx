@@ -3,7 +3,7 @@
 import { MapView as MappedinMapView, useMapData, Navigation } from "@mappedin/react-sdk";
 import "@mappedin/mappedin-js/lib/index.css";
 import { Loader2, AlertCircle, Search, Navigation as NavIcon, Store, X, MapPin } from "lucide-react";
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { recordWayfindingSession } from "@/app/(attendee)/events/actions";
 
 interface MapViewerProps {
@@ -19,6 +19,8 @@ export default function MapViewer({ mapId, booths, eventId }: MapViewerProps) {
   const [userLocation, setUserLocation] = useState<any>(null);
   const [isNavigating, setIsNavigating] = useState(false);
   const [mapView, setMapView] = useState<any>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const [containerReady, setContainerReady] = useState(false);
 
   const { mapData, isLoading, error } = useMapData({
     key: process.env.NEXT_PUBLIC_MAPPEDIN_KEY!,
@@ -31,6 +33,22 @@ export default function MapViewer({ mapId, booths, eventId }: MapViewerProps) {
       // In v6, we can use the mapData to initialize or let MapView handle it
     }
   }, [mapData, mapView]);
+
+  // Observe container size and only initialize Mappedin when it has non-zero dimensions
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    const check = () => {
+      const ok = el.clientWidth > 0 && el.clientHeight > 0;
+      if (ok) setContainerReady(true);
+    };
+
+    check();
+    const ro = new ResizeObserver(() => check());
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   const filteredBooths = useMemo(() => {
     if (!searchQuery) return booths;
@@ -109,15 +127,27 @@ export default function MapViewer({ mapId, booths, eventId }: MapViewerProps) {
           </div>
           <h3 className="text-xl font-bold text-text">Failed to load map</h3>
           <p className="text-text-subtle">
-            We encountered an error while trying to load the venue map. 
-            Please try again later.
+            We encountered an error while trying to load the venue map.
+            {error?.message ? (
+              <span className="block mt-2 text-xs text-text-subtle">Error: {error.message}</span>
+            ) : (
+              <span className="block mt-2 text-xs text-text-subtle">Please try again later.</span>
+            )}
           </p>
-          <button 
-            onClick={() => window.location.reload()}
-            className="mt-4 rounded-md bg-primary px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-primary-hover"
-          >
-            Retry
-          </button>
+          <div className="flex gap-2 mt-4">
+            <button 
+              onClick={() => window.location.reload()}
+              className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-primary-hover"
+            >
+              Retry
+            </button>
+            <button
+              onClick={() => console.info('Mappedin error detail:', error)}
+              className="rounded-md bg-white border border-border px-4 py-2 text-sm font-medium text-text hover:bg-bg"
+            >
+              Log details
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -170,14 +200,18 @@ export default function MapViewer({ mapId, booths, eventId }: MapViewerProps) {
       </div>
 
       {/* Map Content */}
-      <div className="relative flex-1 h-full">
-        <MappedinMapView 
-          mapData={mapData} 
-          className="h-full w-full"
-          onLoad={setMapView}
-        >
-          {directions && <Navigation directions={directions} />}
-        </MappedinMapView>
+      <div ref={containerRef} className="w-full relative flex-1 h-full" style={{ minHeight: 'calc(100vh - 64px)' }}>
+        {containerReady && mapData ? (
+          <MappedinMapView 
+            mapData={mapData} 
+            className="h-full w-full"
+            onLoad={(mv) => { setMapView(mv); console.info('Mappedin onLoad -> mapView set', mv); }}
+          >
+            {directions && <Navigation directions={directions} />}
+          </MappedinMapView>
+        ) : (
+          <div className="h-full w-full" />
+        )}
 
         {/* Floating Booth Info Card */}
         {selectedBooth && (

@@ -1,6 +1,6 @@
 import { getInsForgeServer } from "@/lib/insforge/client";
 import { EventCard } from "@/components/events/EventCard";
-import { UserButton, Show } from "@clerk/nextjs";
+import {UserButton, Show, OrganizationSwitcher} from "@clerk/nextjs";
 
 export const dynamic = "force-dynamic";
 
@@ -17,7 +17,7 @@ export default async function EventsPage() {
         name
       )
     `)
-    .neq("status", "ended") // Or however status is filtered
+    .neq("is_active", false)
     .order("start_date", { ascending: true });
 
   if (error) {
@@ -52,20 +52,18 @@ export default async function EventsPage() {
       <header className="flex items-center justify-between p-4 border-b border-border bg-white shadow-sm sticky top-0 z-50">
         <div className="flex items-center gap-2">
            <a href="/" className="text-xl font-bold text-primary">boothfinder</a>
-           <span className="text-text-subtle">/</span>
-           <span className="font-medium">Events</span>
         </div>
         <div>
           <Show when="signed-in">
             <UserButton />
           </Show>
           <Show when="signed-out">
-            <a 
+            <a
               href="/sign-in"
               className="px-4 py-2 text-sm font-medium text-white bg-primary rounded-md hover:bg-primary-hover transition-colors"
             >
               Sign In
-            </a>
+            </a >
           </Show>
         </div>
       </header>
