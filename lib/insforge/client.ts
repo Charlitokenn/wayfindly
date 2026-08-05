@@ -13,9 +13,9 @@ export async function getInsForgeServer() {
     {
       baseUrl: process.env.NEXT_PUBLIC_INSFORGE_URL!,
       anonKey: process.env.NEXT_PUBLIC_INSFORGE_ANON_KEY!,
-      auth: {
-        edgeFunctionToken: token || undefined,
-      },
+      // auth: {
+      //   edgeFunctionToken: token || undefined,
+      // },
     }
   );
 }
