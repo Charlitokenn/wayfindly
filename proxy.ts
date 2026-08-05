@@ -26,6 +26,7 @@ export default clerkMiddleware(async (auth, req) => {
     }
   }
 
+
   // Handle booth organization routing
   if (orgId && pathname === "/") {
     return NextResponse.redirect(new URL("/organization-profile", req.url));
