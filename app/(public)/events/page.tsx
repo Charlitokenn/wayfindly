@@ -26,7 +26,17 @@ export default async function EventsPage() {
 
   // Determine status dynamically if not stored in DB correctly
   const now = new Date();
-  const processedEvents = (events || []).map((event: any) => {
+
+  interface EventWithVenue {
+      id: string;
+      name: string;
+      start_date: string;
+      end_date: string;
+      status: string;
+      venues: { name: string } | null;
+    }
+
+  const processedEvents = (events || []).map((event: EventWithVenue) => {
     const start = new Date(event.start_date);
     const end = new Date(event.end_date);
     

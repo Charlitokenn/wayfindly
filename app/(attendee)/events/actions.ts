@@ -33,26 +33,32 @@ export async function recordWayfindingSession(data: WayfindingData) {
 
   if (visitError) {
     console.error("Error recording visit:", visitError);
+    return { success: false, error: "Failed to record visit" };
   }
 
-  // 2. Update user_profiles.total_distance_walked_m atomically
-  // Since we don't have a direct atomic increment function in this SDK version's mock or simplified API, 
-  // we fetch and update, or use a custom function if available. 
-  // In a real InsForge/Supabase environment, we'd use .rpc('increment_distance', { amount: data.distanceM })
-  
-  const { data: profile } = await insforge.database
-    .from("user_profiles")
-    .select("total_distance_walked_m, full_name, phone")
-    .eq("id", userId)
-    .single();
+     // 2. Atomically increment total_distance_walked_m and fetch profile data
+         const { data: profile, error: profileError } = await insforge.database
+       .rpc("increment_and_get_profile", {
+             p_user_id: userId,
+             p_amount: Math.round(data.distanceM),
+           });
 
-  if (profile) {
-    await insforge.database
+         if (profileError) {
+           console.error("Error updating profile:", profileError);
+           return { success: false, error: "Failed to update profile" };
+         }
+
+        if (profile) {
+        const { error: updateError } = await insforge.database
       .from("user_profiles")
       .update({
         total_distance_walked_m: (profile.total_distance_walked_m || 0) + Math.round(data.distanceM)
       })
       .eq("id", userId);
+
+        if (updateError) {
+             console.error("Error updating profile:", updateError);
+        }
       
     // 3. Create a lead for the booth
     const { error: leadError } = await insforge.database
@@ -69,6 +75,7 @@ export async function recordWayfindingSession(data: WayfindingData) {
 
     if (leadError) {
       console.error("Error creating lead:", leadError);
+        return { success: false, error: "Failed to create lead" };
     }
   }
 
