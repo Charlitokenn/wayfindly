@@ -12,7 +12,7 @@ export default async function SettingsPage() {
   }
 
   const insforge = await getInsForgeServer();
-  const { data: settings } = await insforge
+  const { data: settings } = await insforge.database
     .from("app_settings")
     .select("*")
     .eq("id", "global")

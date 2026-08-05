@@ -90,7 +90,7 @@ export async function updateBoothListing(data: BoothUpdateInput) {
     edgeFunctionToken: token ?? undefined,
   });
 
-  const { data: updated, error } = await insforge
+  const { data: updated, error } = await insforge.database
     .from('booths')
     .update(data)
     .eq('id', data.id);

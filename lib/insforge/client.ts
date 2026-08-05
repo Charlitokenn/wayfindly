@@ -11,7 +11,7 @@ export async function getInsForgeServer() {
 
   return createClient(
     {
-      url: process.env.NEXT_PUBLIC_INSFORGE_URL!,
+      baseUrl: process.env.NEXT_PUBLIC_INSFORGE_URL!,
       anonKey: process.env.NEXT_PUBLIC_INSFORGE_ANON_KEY!,
       auth: {
         edgeFunctionToken: token || undefined,

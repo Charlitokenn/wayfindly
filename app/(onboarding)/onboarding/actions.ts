@@ -25,7 +25,7 @@ export async function completeOnboarding(formData: FormData) {
   const insforge = await getInsForgeServer();
 
   // 1. Create/Update profile in InsForge
-  const { error } = await insforge
+  const { error } = await insforge.database
     .from("user_profiles")
     .upsert({
       id: userId,
