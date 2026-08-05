@@ -23,7 +23,7 @@ export async function updateAppSettings(formData: FormData) {
    }
   const insforge = await getInsForgeServer();
 
-  const { error } = await insforge
+  const { error } = await insforge.database
     .from("app_settings")
     .upsert({
       id: "global", // Single record for global settings
