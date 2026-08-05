@@ -18,6 +18,9 @@ export async function updateAppSettings(formData: FormData) {
   const feeEnabled = formData.get("feeEnabled") === "on";
   const feeAmount = parseFloat(formData.get("feeAmount") as string);
 
+  if (isNaN(feeAmount) || feeAmount < 0) {
+        throw new Error("Invalid fee amount");
+   }
   const insforge = await getInsForgeServer();
 
   const { error } = await insforge
