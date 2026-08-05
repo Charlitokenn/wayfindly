@@ -16,7 +16,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "boothfinder — Wayfinding & Lead Capture",
+  title: "Wayfindly — Wayfinding & Lead Capture",
   description: "Efficient wayfinding and booth discovery for event attendees.",
 };
 
