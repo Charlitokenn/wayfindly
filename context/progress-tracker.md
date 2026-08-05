@@ -100,12 +100,12 @@ Last updated: 2026-07-08
 ## Build Notes
 
 **Feature 1 — Project setup + full DB schema** (2026-07-08)
-Files changed: `package.json`, `app/layout.tsx`, `app/globals.css`, `proxy.ts`, `lib/insforge/schema.txt`
+Files changed: `package.json`, `app/layout.tsx`, `app/globals.css`, `middleware.ts`, `lib/insforge/schema.txt`
 Decisions: Used Ubuntu font for sans, JetBrains Mono for mono. Configured Tailwind v4 with project tokens. Defined 15 tables for InsForge.
 Next: Feature 2 — Google OAuth + Clerk org routing
 
 **Feature 2 — Google OAuth + Clerk org routing** (2026-07-08)
-Files changed: `proxy.ts`, `components/auth/Show.tsx`, `app/page.tsx`
+Files changed: `middleware.ts`, `components/auth/Show.tsx`, `app/page.tsx`
 Decisions: Implemented `afterAuth` middleware for onboarding and org redirects. Created `<Show>` component for role-based UI.
 Next: Feature 3 — Idle sign-in prompt (3-min timer)
 

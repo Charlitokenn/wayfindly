@@ -8,13 +8,13 @@ Last updated: 2026-07-08
 - **Project Foundation**: Initialized Next.js 16 (Turbopack) + PWA + Tailwind v4.
 - **Database Schema**: Defined 15 tables in InsForge for user profiles, booths, leads, visits, and contests.
 - **Authentication**: Implemented Clerk with org-aware routing and a role-based `<Show>` component.
-- **Middleware**: Created `proxy.ts` using Clerk's async `auth()` helper to handle public routes, onboarding redirects, and organization-specific routing.
+- **Middleware**: Created `middleware.ts` using Clerk's async `auth()` helper to handle public routes, onboarding redirects, and organization-specific routing.
 - **Onboarding Flow**: Built `/onboarding` page and Server Actions to sync Clerk users with InsForge profiles.
 - **Idle Sign-In**: Developed `IdleSignInPrompt` and `useIdleTimer` hook to drive user conversion after 3 minutes.
 - **Admin Settings**: Implemented a global settings panel to manage the `wayfinding_fee_enabled` toggle.
 
 ### Decisions made
-- **Proxy Pattern**: Used `proxy.ts` for middleware to align with the provided architecture guidelines while adapting to Clerk's `createRouteMatcher` deprecation.
+- **Proxy Pattern**: Used `middleware.ts` for middleware to align with the provided architecture guidelines while adapting to Clerk's `createRouteMatcher` deprecation.
 - **InsForge Client**: Constructed the InsForge client per-request using a fresh `edgeFunctionToken` for server-side operations.
 - **Tailwind v4**: Integrated design tokens directly into `app/globals.css` using CSS variables to ensure consistency with `ui-tokens.md`.
 

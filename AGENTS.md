@@ -46,12 +46,12 @@ Read the context files in this exact order before writing any code:
 
 ## Tech Stack Quick Reference
 
-- **Framework**: Next.js 16 with App Router + PWA via `next-pwa` (Turbopack; middleware in `proxy.ts`)
+- **Framework**: Next.js 16 with App Router + PWA via `next-pwa` (Turbopack; middleware in `middleware.ts`)
 - **Language**: TypeScript 5 (strict mode)
 - **Styling**: Tailwind CSS v4 + shadcn/ui + diceui.com (contest draw spinner + picker)
 - **Maps**: Mappedin Web SDK v6 / React SDK v6 (browser-only; `useMapData`, `<MapView>`, `<Navigation>`)
 - **Backend / BaaS**: InsForge (`@insforge/sdk`; server mode needs per-request `edgeFunctionToken` from Clerk)
-- **Auth**: Clerk — Google OAuth only; org-aware routing; `proxy.ts` middleware; `<Show>` components
+- **Auth**: Clerk — Google OAuth only; org-aware routing; `middleware.ts` middleware; `<Show>` components
 - **Payments**: ClickPesa (Tanzania mobile money; part of onboarding flow; server-side webhook)
 - **Analytics**: PostHog (zero PII; `instrumentation-client.ts` init; PostHog Insights API server-side)
 - **Social**: Instagram Graph API (booth OAuth; post verification for contests)

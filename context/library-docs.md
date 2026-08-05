@@ -35,7 +35,7 @@
 - Data fetching: Server Components call InsForge directly; mutations via Server Actions
 - Navigation: `next/navigation` (`useRouter`, `redirect`, `notFound`) — not `next/router`
 - Images: always `next/image` — configure `remotePatterns` in `next.config.ts` for InsForge storage domain
-- **Middleware file is named `proxy.ts`** in Next.js 16 (was `middleware.ts` in ≤15)
+- **Middleware file is named `middleware.ts`** in Next.js 16 (was `middleware.ts` in ≤15)
 - PWA: `next-pwa` registers service worker in production; Mappedin handles its own offline tile cache separately
 - PostHog initialised in `instrumentation-client.ts` at project root (no manual provider needed)
 
@@ -93,14 +93,14 @@
 
 - **Google OAuth only** — disable all other social providers in the Clerk Dashboard.
   Do not add email/password, GitHub, or any other provider.
-- Route protection via `clerkMiddleware()` exported from **`proxy.ts`** at project root
+- Route protection via `clerkMiddleware()` exported from **`middleware.ts`** at project root
 - By default `clerkMiddleware()` protects nothing — opt in via `auth.protect()` in the matcher
 - Server-side: `await auth()` from `@clerk/nextjs/server`
 - Client-side: `useAuth()` or `useUser()` from `@clerk/nextjs`
 - Conditional rendering: use `<Show when="signed-in">` and `<Show when="signed-out">`
   (Clerk Core 3 — replaces older `<SignedIn>` / `<SignedOut>`)
 - **Onboarding gate**: store `onboardingComplete: boolean` in `publicMetadata` via
-  Clerk Backend API (Server Action using `CLERK_SECRET_KEY`). Read it in `proxy.ts`
+  Clerk Backend API (Server Action using `CLERK_SECRET_KEY`). Read it in `middleware.ts`
   via `auth().sessionClaims?.metadata?.onboardingComplete` to redirect incomplete users.
 - **Org routing**: after login, check `auth().orgId`:
   - Has org → show `<UserProfile>` with `hidePersonal={false}` (personal profile option enabled)
@@ -292,9 +292,9 @@
 
 | Library | Locked Version | Reason |
 |---------|---------------|--------|
-| `next` | `^16.x` | `proxy.ts` middleware convention; Turbopack default |
+| `next` | `^16.x` | `middleware.ts` middleware convention; Turbopack default |
 | `tailwindcss` | `^4.0.0` | v4 CSS-first config; `@theme` directive |
-| `@clerk/nextjs` | latest (Core 3) | `<Show>` components; `proxy.ts`; deprecates fast |
+| `@clerk/nextjs` | latest (Core 3) | `<Show>` components; `middleware.ts`; deprecates fast |
 | `@mappedin/mappedin-js` + `@mappedin/react-sdk` | pin matching minor | Must stay same minor; v6 breaks v5 patterns |
 | `@insforge/sdk` | latest | Fast-moving platform; track changelog |
 | `posthog-js` / `posthog-node` | latest | Watch for `@posthog/next` stable |

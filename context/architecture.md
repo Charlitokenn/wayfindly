@@ -9,7 +9,7 @@
 | Styling | Tailwind CSS v4 + shadcn/ui + diceui.com | CSS-first config; diceui used for contest picker spinner and draw components |
 | Maps | Mappedin Web SDK v6 / React SDK v6 | Browser-only; `useMapData` + `<MapView>` + `<Navigation>`; offline tiles auto-cached |
 | Backend / BaaS | InsForge | PostgreSQL DB, Clerk JWT bridge, file storage, edge functions |
-| Auth | Clerk | Google OAuth only; org-aware routing; `proxy.ts` middleware |
+| Auth | Clerk | Google OAuth only; org-aware routing; `middleware.ts` middleware |
 | Payments | ClickPesa | Tanzania mobile money; server-side webhook verification; part of onboarding |
 | Analytics | PostHog | Search popularity + product analytics; zero PII in events |
 | Instagram | Instagram Graph API (Meta) | OAuth for booth connections; post verification for contests |
@@ -93,7 +93,7 @@ boothfinder/
 ├── instrumentation-client.ts    # PostHog init
 ├── context/                     # AI agent context files
 ├── public/manifest.json
-├── proxy.ts                     # clerkMiddleware() — Next.js 16
+├── middleware.ts                     # clerkMiddleware() — Next.js 16
 ├── .env.local
 └── next.config.ts
 ```
@@ -204,7 +204,7 @@ still stored in InsForge for financial audit purposes.
 
 ### Org-aware Clerk routing
 boothfinder serves two user types in one app. Clerk's `<UserProfile>` component
-handles the org context switcher. `proxy.ts` reads `auth().orgId` to determine
+handles the org context switcher. `middleware.ts` reads `auth().orgId` to determine
 which route group a user enters. A user can be both an attendee (no org
 context) and a booth member (org context) — the Clerk personal profile option
 routes them back to the attendee experience without a separate account.
@@ -239,7 +239,7 @@ with `booths.category` to produce a preference map — PII (name/phone) from
 ### Clerk orgs map to roles
 Three roles: `admin` (venue admin), `business` (booth owner via Clerk org),
 `attendee` (general public). Route groups protected via `clerkMiddleware()` in
-`proxy.ts`. InsForge RLS uses the `requesting_user_id()` SQL helper (returns
+`middleware.ts`. InsForge RLS uses the `requesting_user_id()` SQL helper (returns
 `sub` claim from JWT) — not `auth.uid()` which is Supabase-specific.
 
 ### PostHog vs InsForge — analytics split
